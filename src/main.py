@@ -111,8 +111,8 @@ class SBoxAnalyzerApp:
     def __init__(self, root):
         self.root = root
         self.root.title("🔐 S-Box Analyzer")
-        self.root.geometry("1400x800")
-        self.root.minsize(1400, 900)
+        self.root.geometry("1100x600")
+        self.root.minsize(900, 890)
         self.root.resizable(True, True)
         self.sbox = None
         self.results = {}
@@ -441,14 +441,12 @@ class SBoxAnalyzerApp:
                     elif isinstance(grandchild, ttk.Checkbutton):
                         grandchild.config(state='normal')
 
-
 # ------------------ Main Execution ------------------
 
 def main():
     root = tk.Tk()
     app = SBoxAnalyzerApp(root)
     root.mainloop()
-
 
 if __name__ == "__main__":
     main()
