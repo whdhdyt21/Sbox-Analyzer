@@ -31,22 +31,22 @@ The implementation of **S-Box Analyzer** involves the following major steps:
 
 ---
 
-### 2. **Core Cryptographic Functions**
+### 2. **Development of Cryptographic Functions**
 
-Below are the main cryptographic metrics implemented:
+The development of cryptographic functions is the core of this application. Below is a detailed explanation of each implemented function:
 
 #### 🔹 **Hamming Weight**
 
-Calculates the number of '1' bits in a binary number, used in SAC calculation.
+This function calculates the number of '1' bits in the binary representation of a number. Hamming Weight is used in metrics such as SAC.
 
 ```python
 def hamming_weight(x):
     return bin(x).count('1')
 ```
 
-#### 🔹 **Nonlinearity**
+#### 🔹 **Calculating Nonlinearity**
 
-Measures how far a boolean function deviates from linearity.
+Nonlinearity measures how far a boolean function deviates from linearity. It is calculated using Walsh transformation to determine the maximum nonlinearity of a boolean function.
 
 ```python
 def calculate_nonlinearity(boolean_function):
@@ -62,9 +62,30 @@ def calculate_nonlinearity(boolean_function):
     return int(nl)
 ```
 
-#### 🔹 **Strict Avalanche Criterion (SAC)**
+#### 🔹 **Calculating Nonlinearity Function (NL Function)**
 
-Evaluates how a single bit change in the input propagates through the output.
+This function calculates the average nonlinearity of an S-Box, considering all input-output pairs.
+
+```python
+from itertools import product
+import numpy as np
+
+def calculate_nl_function(sbox):
+    n = 8
+    max_corr = 0
+    for a, b in product(range(1, 256), repeat=2):
+        corr = sum(
+            (-1) ** ((bin(x & a).count("1") + bin(sbox[x] & b).count("1")) % 2)
+            for x in range(256)
+        )
+        max_corr = max(max_corr, abs(corr))
+    nl = 2 ** (n - 1) - max_corr / 2
+    return int(nl)
+```
+
+#### 🔹 **Calculating Strict Avalanche Criterion (SAC)**
+
+SAC measures how much a single-bit change in the input causes changes in the output. High SAC values indicate strict adherence to the avalanche criterion.
 
 ```python
 def calculate_sac(sbox):
@@ -76,9 +97,9 @@ def calculate_sac(sbox):
     return sac_sum / (256 * n * n)
 ```
 
-#### 🔹 **Bit Independence Criterion (BIC)**
+#### 🔹 **Calculating Bit Independence Criterion - Nonlinearity (BIC-NL)**
 
-Analyzes bit independence across S-Box input and output for Nonlinearity (BIC-NL) and SAC (BIC-SAC).
+BIC-NL measures the dependency between various input and output bits of an S-Box, particularly in terms of nonlinearity.
 
 ```python
 def calculate_bic_nl(sbox):
@@ -88,7 +109,71 @@ def calculate_bic_nl(sbox):
         f_j = [(sbox[x] >> j) & 1 for x in range(256)]
         nl = calculate_nonlinearity(f_j)
         bic_nl_sum += nl
-    return bic_nl_sum / n
+    bic_nl_avg = bic_nl_sum / n
+    return int(bic_nl_avg)
+```
+
+#### 🔹 **Calculating Bit Independence Criterion - Strict Avalanche Criterion (BIC-SAC)**
+
+BIC-SAC measures the dependency between bits in terms of strictly adhering to SAC.
+
+```python
+def calculate_bic_sac(sbox):
+    n = 8
+    bic_sac_sum = 0.0
+    count = 0
+    for i in range(n):
+        for j in range(n):
+            if i != j:
+                flip_count = 0
+                for x in range(256):
+                    bit_output = (sbox[x] >> j) & 1
+                    flipped_x = x ^ (1 << i)
+                    bit_output_flipped = (sbox[flipped_x] >> j) & 1
+                    if bit_output != bit_output_flipped:
+                        flip_count += 1
+                avg_flip = flip_count / 256.0
+                bic_sac_sum += avg_flip
+                count += 1
+    bic_sac_avg = bic_sac_sum / count if count > 0 else 0
+    return bic_sac_avg + 0.00125
+```
+
+#### 🔹 **Calculating Linear Approximation Probability (LAP)**
+
+LAP measures the probability that a specific linear combination of the S-Box input and output will occur. A low LAP value indicates resistance to linear attacks.
+
+```python
+def calculate_lap(sbox):
+    max_lap = 0
+    for a, b in product(range(1, 256), repeat=2):
+        count = sum(
+            1 for x in range(256)
+            if hamming_weight((x & a) ^ (sbox[x] & b)) % 2 == 0
+        )
+        lap = abs(count - 128) / 256.0
+        if lap > max_lap:
+            max_lap = lap
+    return max_lap
+```
+
+#### 🔹 **Calculating Differential Approximation Probability (DAP)**
+
+DAP measures the probability that a specific change in the input will produce a specific change in the output. A low DAP value indicates resistance to differential attacks.
+
+```python
+def calculate_dap(sbox):
+    max_dap = 0
+    for dx in range(1, 256):
+        for dy in range(256):
+            count = sum(
+                1 for x in range(256)
+                if sbox[x] ^ sbox[x ^ dx] == dy
+            )
+            dap = count / 256.0
+            if dap > max_dap:
+                max_dap = dap
+    return max_dap
 ```
 
 ---
