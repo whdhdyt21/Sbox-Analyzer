@@ -1,3 +1,5 @@
+![S-Box Analyzer GUI](assets/main_gui.png)
+
 # 🔐 S-Box Analyzer
 
 S-Box Analyzer adalah aplikasi GUI berbasis Python yang dirancang untuk menganalisis S-Box (Substitution Box) dalam kriptografi. Aplikasi ini menyediakan berbagai metrik analisis kriptografis seperti Nonlinearitas, Strict Avalanche Criterion (SAC), Bit Independence Criterion (BIC-NL & BIC-SAC), Linear Approximation Probability (LAP), dan Differential Approximation Probability (DAP).
