@@ -208,7 +208,7 @@ analysis_thread.start()
 1. **Clone the Repository**:
 
     ```bash
-    git clone https://github.com/username/sbox-analyzer.git
+    git clone https://github.com/whdhdyt21/sbox-analyzer.git
     cd sbox-analyzer
     ```
 
