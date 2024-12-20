@@ -2,7 +2,7 @@
 
 # 🔐 S-Box Analyzer
 
-**S-Box Analyzer** is a Python-based GUI application designed for cryptographic analysis of S-Boxes (Substitution Boxes). The application provides various cryptographic metrics, such as **Nonlinearity**, **Strict Avalanche Criterion (SAC)**, **Bit Independence Criterion (BIC-NL & BIC-SAC)**, **Linear Approximation Probability (LAP)**, and **Differential Approximation Probability (DAP)**.
+**S-Box Analyzer** is a Python-based GUI application designed for cryptographic analysis of S-Boxes (Substitution Boxes). The application provides various cryptographic metrics, such as **Nonlinearity (NL)**, **Strict Avalanche Criterion (SAC)**, **Bit Independence Criterion (BIC)**, **Bit Independence Criterion - Nonlinearity (BIC-NL)**, **Bit Independence Criterion - Strict Avalanche Criterion (BIC-SAC)**, **Linear Approximation Probability (LAP)**, and **Differential Approximation Probability (DAP)**.
 
 ---
 
@@ -215,12 +215,13 @@ analysis_thread.start()
 2. **Install Dependencies**:
 
     ```bash
-    pip install -r requirements.txt
+    pip install numpy pandas openpyxl
     ```
 
 3. **Run the Application**:
 
     ```bash
+    cd src
     python main.py
     ```
 
@@ -252,7 +253,7 @@ analysis_thread.start()
 
 We welcome contributions! Here's how to get involved:
 
-1. **Fork the Repo**
+1. **Fork the Repository**
 2. **Create a Feature Branch**:
 
     ```bash
